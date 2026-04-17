@@ -45,4 +45,8 @@ procure-ai-prep/
 
 ## Status
 
-Currently at **step 1 of 12** (scaffold complete). Next: Postgres via `docker-compose`.
+Currently at **step 1 of 12** (monorepo scaffold complete). Next: Postgres via `docker-compose`.
+
+### Build order
+
+Steps execute in the order `1 → 2 → 3 → 8 → 4 → 5 → 6 → 7 → 9 → 10 → 11 → 12`. After step 8, a long-lived `scaffold` branch is frozen — monorepo + DB + API skeleton + web skeleton — so it can be reused as a starting point for future hackathon runs. Product-specific work (schemas, endpoints, screens) lives only on `main`.

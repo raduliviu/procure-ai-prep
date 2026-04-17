@@ -70,6 +70,16 @@ Role toggle in the header (requester ↔ approver) rewrites `x-user-id` in local
 
 ---
 
+## Build order and the scaffold branch
+
+The steps below are numbered by logical grouping, but we **execute them in the order 1 → 2 → 3 → 8 → 4 → 5 → 6 → 7 → 9 → 10 → 11 → 12**. The reorder lets us freeze a reusable scaffold once the skeleton boots end-to-end but before any product-specific code exists.
+
+After step 8 we create a long-lived `scaffold` branch (never merged back into `main`). That branch captures: monorepo, Postgres, Fastify + `/health`, and the Vite + React + TS + TanStack Query + TanStack Router shell with a typed API client. It's deliberately **product-agnostic** and can be cloned as a starting point for future hackathon runs.
+
+Everything from step 4 onward (schemas, endpoints, screens, seed data) stays on `main` and does not touch the scaffold branch.
+
+---
+
 ## Step-by-step plan
 
 Each step is demoable on its own — stop and check before moving on.
