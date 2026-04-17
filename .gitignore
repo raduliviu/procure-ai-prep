@@ -1,0 +1,40 @@
+# Dependencies
+node_modules/
+
+# Build outputs
+dist/
+build/
+*.tsbuildinfo
+
+# Vite dev cache
+.vite/
+
+# Env files (commit .env.example, never .env itself)
+.env
+.env.local
+.env.*.local
+
+# Logs
+*.log
+npm-debug.log*
+pnpm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# OS cruft
+.DS_Store
+Thumbs.db
+
+# Editors
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Test coverage
+coverage/
+.nyc_output/
+
+# Claude Code — ignore personal overrides, commit everything else
+# (shared skills, subagents, slash commands, hooks, and team settings.json all live in .claude/)
+.claude/settings.local.json

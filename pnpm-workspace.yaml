@@ -1,0 +1,7 @@
+packages:
+  - "apps/*"
+  - "packages/*"
+
+# Supply-chain safety: packages must be published for at least 3 days
+# before pnpm will install them. Measured in minutes (3 * 24 * 60 = 4320).
+minimumReleaseAge: 4320
