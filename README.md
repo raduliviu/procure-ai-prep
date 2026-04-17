@@ -7,7 +7,7 @@ See [`PLAN.md`](PLAN.md) for the full roadmap and design decisions.
 ## Stack
 
 - **Frontend:** Vite + React + TypeScript, TanStack Query, TanStack Router
-- **Backend:** Fastify + TypeScript, Zod, Drizzle ORM
+- **Backend:** Hono + TypeScript, Zod, Drizzle ORM
 - **Shared:** `packages/shared` — Zod schemas reused by both apps for end-to-end types
 - **Database:** PostgreSQL 18 (via `docker-compose`)
 - **AI:** OpenAI SDK, `gpt-4o-mini` with structured outputs
