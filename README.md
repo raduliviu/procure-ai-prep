@@ -25,28 +25,6 @@ See [`PLAN.md`](PLAN.md) for the full roadmap and design decisions.
 ```bash
 cp .env.example .env          # fill in OPENAI_API_KEY
 pnpm install
-# Remaining commands (db:up, migrations, dev servers) come online as we build.
+pnpm db:up                    # start Postgres in Docker
 ```
 
-## Project structure
-
-```
-procure-ai-prep/
-├── apps/
-│   ├── api/                  # Fastify backend (scaffolded in step 3)
-│   └── web/                  # React frontend (scaffolded in step 8)
-├── packages/
-│   └── shared/               # Zod schemas shared by api and web (step 5)
-├── PLAN.md                   # Step-by-step build plan
-├── pnpm-workspace.yaml       # Workspaces + supply-chain settings
-├── tsconfig.base.json        # Strict shared TypeScript config
-└── .env.example              # Environment variable template
-```
-
-## Status
-
-Currently at **step 1 of 12** (monorepo scaffold complete). Next: Postgres via `docker-compose`.
-
-### Build order
-
-Steps execute in the order `1 → 2 → 3 → 8 → 4 → 5 → 6 → 7 → 9 → 10 → 11 → 12`. After step 8, a long-lived `scaffold` branch is frozen — monorepo + DB + API skeleton + web skeleton — so it can be reused as a starting point for future hackathon runs. Product-specific work (schemas, endpoints, screens) lives only on `main`.
