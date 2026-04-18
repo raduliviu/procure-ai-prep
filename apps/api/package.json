@@ -15,9 +15,12 @@
 	},
 	"dependencies": {
 		"@hono/node-server": "^1.19.14",
+		"@hono/zod-validator": "^0.7.6",
+		"@procure/shared": "workspace:*",
 		"drizzle-orm": "^0.45.2",
 		"hono": "^4.12.14",
-		"postgres": "^3.4.9"
+		"postgres": "^3.4.9",
+		"zod": "^4.3.6"
 	},
 	"devDependencies": {
 		"drizzle-kit": "^0.31.10",

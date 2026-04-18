@@ -1,10 +1,10 @@
-import { drizzle } from 'drizzle-orm/postgres-js';
-import postgres from 'postgres';
-import * as schema from './schema.js';
+import { drizzle } from "drizzle-orm/postgres-js";
+import postgres from "postgres";
+import * as schema from "./schema.js";
 
 const connectionString = process.env.DATABASE_URL;
 if (!connectionString) {
-    throw new Error('DATABASE_URL is not set — copy .env.example to .env at the repo root.');
+	throw new Error("DATABASE_URL is not set — copy .env.example to .env at the repo root.");
 }
 
 // postgres.js manages its own connection pool internally (default: max 10).

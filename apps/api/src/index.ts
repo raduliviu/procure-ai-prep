@@ -1,6 +1,8 @@
 import { serve } from "@hono/node-server";
 import { Hono } from "hono";
 import { logger } from "hono/logger";
+import { requireUser } from "./middleware/auth.js";
+import { requestsRouter } from "./routes/requests.js";
 
 const app = new Hono();
 
@@ -15,7 +17,15 @@ app.get("/health", (c) => c.json({ ok: true }));
 // proxies /api/* on the web origin to this server. In prod, a reverse
 // proxy (nginx, Cloudflare, etc.) would do the same.
 const api = new Hono();
+
+// /api/health stays unauthenticated so the frontend can probe it
+// without needing a seeded user.
 api.get("/health", (c) => c.json({ ok: true }));
+
+// Everything registered below this line requires a valid x-user-id.
+api.use("*", requireUser);
+api.route("/requests", requestsRouter);
+
 app.route("/api", api);
 
 const port = Number(process.env.API_PORT ?? 3001);
