@@ -1,10 +1,10 @@
 import { createRouter } from "@tanstack/react-router";
 import { rootRoute } from "./routes/root";
-import { queueRoute } from "./routes/queue";
-import { newRequestRoute } from "./routes/new-request";
-import { requestDetailRoute } from "./routes/request-detail";
+import { homeRoute } from "./routes/home";
+import { newItemRoute } from "./routes/new-item";
+import { itemDetailRoute } from "./routes/item-detail";
 
-const routeTree = rootRoute.addChildren([queueRoute, newRequestRoute, requestDetailRoute]);
+const routeTree = rootRoute.addChildren([homeRoute, newItemRoute, itemDetailRoute]);
 
 export const router = createRouter({ routeTree });
 

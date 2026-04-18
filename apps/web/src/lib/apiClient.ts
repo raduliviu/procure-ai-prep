@@ -1,65 +1,36 @@
 /**
- * Minimal typed API client for talking to the Hono backend.
+ * Minimal typed API client.
  *
- * In dev, requests use relative URLs (`/api/...`) and Vite's proxy
- * forwards them to the API. In production, set `VITE_API_URL` to the
- * absolute origin of the deployed API.
+ * In dev, paths like `/api/...` are relative and Vite's proxy forwards
+ * them to the backend. In prod, set `VITE_API_URL` to the absolute API
+ * origin.
  *
- * Mock auth: if a user id is stored in localStorage under `x-user-id`,
- * it gets sent as a header on every request. The role toggle written
- * in the next sub-step is what populates that key.
+ * Mock auth: if `localStorage['x-user-id']` is set, its value is sent
+ * as the `x-user-id` header on every request. How it gets set (a login
+ * flow, a role toggle, a hard-coded default) is the consumer's call.
+ *
+ * On non-2xx the thrown Error carries `.status` and `.body` for
+ * structured error handling. Errors are detected via duck-typing
+ * (`'status' in err`), not `instanceof`, so no custom class.
  */
-
-export class ApiError extends Error {
-	readonly status: number;
-	readonly statusText: string;
-	readonly body: unknown;
-
-	constructor(status: number, statusText: string, body: unknown) {
-		super(`API error ${status}: ${statusText}`);
-		this.name = "ApiError";
-		this.status = status;
-		this.statusText = statusText;
-		this.body = body;
-	}
-}
-
-const USER_ID_STORAGE_KEY = "x-user-id";
-
-function getUserId(): string | null {
-	return window.localStorage.getItem(USER_ID_STORAGE_KEY);
-}
-
-const BASE_URL = import.meta.env.VITE_API_URL ?? "";
 
 export interface ApiRequestOptions {
 	method?: "GET" | "POST" | "PATCH" | "PUT" | "DELETE";
 	body?: unknown;
 	signal?: AbortSignal;
 	headers?: Record<string, string>;
-	/**
-	 * Optional response parser/validator. Pass a Zod schema's `.parse`
-	 * (or any `(data: unknown) => T` function) to narrow the response
-	 * type with runtime validation.
-	 */
-	parse?: (data: unknown) => unknown;
 }
 
-export async function apiRequest<TResponse>(
-	path: string,
-	options: ApiRequestOptions = {},
-): Promise<TResponse> {
-	const { method = "GET", body, signal, headers = {}, parse } = options;
+export async function apiRequest<T>(path: string, options: ApiRequestOptions = {}): Promise<T> {
+	const { method = "GET", body, signal, headers = {} } = options;
 
-	const userId = getUserId();
-	const finalHeaders: Record<string, string> = {
-		Accept: "application/json",
-		...headers,
-	};
+	const finalHeaders: Record<string, string> = { ...headers };
+	const userId = window.localStorage.getItem("x-user-id");
 	if (userId !== null) finalHeaders["x-user-id"] = userId;
 	if (body !== undefined) finalHeaders["Content-Type"] = "application/json";
 
-	const response = await fetch(`${BASE_URL}${path}`, {
+	const baseUrl = import.meta.env.VITE_API_URL ?? "";
+	const response = await fetch(`${baseUrl}${path}`, {
 		method,
 		headers: finalHeaders,
 		body: body !== undefined ? JSON.stringify(body) : undefined,
@@ -70,21 +41,11 @@ export async function apiRequest<TResponse>(
 	const parsed: unknown = text.length > 0 ? JSON.parse(text) : null;
 
 	if (!response.ok) {
-		throw new ApiError(response.status, response.statusText, parsed);
+		throw Object.assign(new Error(`API ${response.status}: ${response.statusText}`), {
+			status: response.status,
+			body: parsed,
+		});
 	}
 
-	return (parse ? parse(parsed) : parsed) as TResponse;
+	return parsed as T;
 }
-
-type OptionsWithoutMethodAndBody = Omit<ApiRequestOptions, "method" | "body">;
-
-export const api = {
-	get: <T>(path: string, options?: OptionsWithoutMethodAndBody) =>
-		apiRequest<T>(path, { ...options, method: "GET" }),
-	post: <T>(path: string, body: unknown, options?: OptionsWithoutMethodAndBody) =>
-		apiRequest<T>(path, { ...options, method: "POST", body }),
-	patch: <T>(path: string, body: unknown, options?: OptionsWithoutMethodAndBody) =>
-		apiRequest<T>(path, { ...options, method: "PATCH", body }),
-	delete: <T>(path: string, options?: OptionsWithoutMethodAndBody) =>
-		apiRequest<T>(path, { ...options, method: "DELETE" }),
-};

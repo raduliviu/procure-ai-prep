@@ -2,7 +2,7 @@
 	"name": "procure-ai-prep",
 	"version": "0.0.0",
 	"private": true,
-	"description": "Hackathon prep: an AI-triaged procurement intake tool (React + Hono + Postgres).",
+	"description": "Hackathon-ready monorepo scaffold: React + Hono + Postgres.",
 	"type": "module",
 	"packageManager": "pnpm@10.33.0",
 	"engines": {
