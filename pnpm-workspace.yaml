@@ -5,3 +5,10 @@ packages:
 # Supply-chain safety: packages must be published for at least 3 days
 # before pnpm will install them. Measured in minutes (3 * 24 * 60 = 4320).
 minimumReleaseAge: 4320
+
+# Dependencies explicitly allowed to run install-time scripts. pnpm 10
+# blocks these by default as a supply-chain defense; list here the
+# trusted ones that legitimately need a postinstall (e.g. to fetch a
+# platform-specific native binary).
+onlyBuiltDependencies:
+  - esbuild
