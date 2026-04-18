@@ -20,4 +20,14 @@ export default defineConfig([
 			globals: globals.browser,
 		},
 	},
+	{
+		// shadcn/ui components ship with co-located CVA variants (e.g.
+		// `buttonVariants`) which trip react-refresh/only-export-components.
+		// These files are treated as a local component library — edits to
+		// them are rare and a full reload is fine.
+		files: ["src/components/ui/**/*.{ts,tsx}"],
+		rules: {
+			"react-refresh/only-export-components": "off",
+		},
+	},
 ]);
