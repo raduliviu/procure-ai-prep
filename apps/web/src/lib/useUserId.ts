@@ -3,7 +3,7 @@ import { useCallback, useState } from "react";
 const STORAGE_KEY = "x-user-id";
 
 function readUserId(): string | null {
-  return window.localStorage.getItem(STORAGE_KEY);
+	return window.localStorage.getItem(STORAGE_KEY);
 }
 
 /**
@@ -14,16 +14,16 @@ function readUserId(): string | null {
  * what the UI is showing.
  */
 export function useUserId() {
-  const [userId, setUserId] = useState<string | null>(readUserId);
+	const [userId, setUserId] = useState<string | null>(readUserId);
 
-  const setUserIdPersisted = useCallback((id: string | null) => {
-    if (id === null) {
-      window.localStorage.removeItem(STORAGE_KEY);
-    } else {
-      window.localStorage.setItem(STORAGE_KEY, id);
-    }
-    setUserId(id);
-  }, []);
+	const setUserIdPersisted = useCallback((id: string | null) => {
+		if (id === null) {
+			window.localStorage.removeItem(STORAGE_KEY);
+		} else {
+			window.localStorage.setItem(STORAGE_KEY, id);
+		}
+		setUserId(id);
+	}, []);
 
-  return [userId, setUserIdPersisted] as const;
+	return [userId, setUserIdPersisted] as const;
 }

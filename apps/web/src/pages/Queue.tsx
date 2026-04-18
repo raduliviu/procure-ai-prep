@@ -1,3 +1,3 @@
 export function Queue() {
-  return <div>Queue (placeholder)</div>;
+	return <div>Queue (placeholder)</div>;
 }

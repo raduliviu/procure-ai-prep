@@ -1,23 +1,26 @@
 {
-  "name": "procure-ai-prep",
-  "version": "0.0.0",
-  "private": true,
-  "description": "Hackathon prep: an AI-triaged procurement intake tool (React + Fastify + Postgres).",
-  "type": "module",
-  "packageManager": "pnpm@10.33.0",
-  "engines": {
-    "node": ">=24"
-  },
-  "scripts": {
-    "dev": "pnpm -r --parallel run dev",
-    "build": "pnpm -r run build",
-    "typecheck": "pnpm -r run typecheck",
-    "db:up": "docker compose up -d postgres",
-    "db:down": "docker compose down",
-    "db:logs": "docker compose logs -f postgres"
-  },
-  "devDependencies": {
-    "@types/node": "^25.6.0",
-    "typescript": "^6.0.2"
-  }
+	"name": "procure-ai-prep",
+	"version": "0.0.0",
+	"private": true,
+	"description": "Hackathon prep: an AI-triaged procurement intake tool (React + Hono + Postgres).",
+	"type": "module",
+	"packageManager": "pnpm@10.33.0",
+	"engines": {
+		"node": ">=24"
+	},
+	"scripts": {
+		"dev": "pnpm -r --parallel run dev",
+		"build": "pnpm -r run build",
+		"typecheck": "pnpm -r run typecheck",
+		"format": "prettier --write .",
+		"format:check": "prettier --check .",
+		"db:up": "docker compose up -d postgres",
+		"db:down": "docker compose down",
+		"db:logs": "docker compose logs -f postgres"
+	},
+	"devDependencies": {
+		"@types/node": "^25.6.0",
+		"prettier": "^3.8.3",
+		"typescript": "^6.0.2"
+	}
 }

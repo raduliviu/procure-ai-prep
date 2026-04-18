@@ -27,4 +27,3 @@ cp .env.example .env          # fill in OPENAI_API_KEY
 pnpm install
 pnpm db:up                    # start Postgres in Docker
 ```
-

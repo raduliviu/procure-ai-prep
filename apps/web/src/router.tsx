@@ -4,11 +4,7 @@ import { queueRoute } from "./routes/queue";
 import { newRequestRoute } from "./routes/new-request";
 import { requestDetailRoute } from "./routes/request-detail";
 
-const routeTree = rootRoute.addChildren([
-  queueRoute,
-  newRequestRoute,
-  requestDetailRoute,
-]);
+const routeTree = rootRoute.addChildren([queueRoute, newRequestRoute, requestDetailRoute]);
 
 export const router = createRouter({ routeTree });
 
@@ -16,7 +12,7 @@ export const router = createRouter({ routeTree });
 // <Link>, useNavigate, useParams, useSearch etc. strongly typed
 // against our route tree.
 declare module "@tanstack/react-router" {
-  interface Register {
-    router: typeof router;
-  }
+	interface Register {
+		router: typeof router;
+	}
 }

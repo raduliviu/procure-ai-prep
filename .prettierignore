@@ -1,0 +1,16 @@
+# Don't format anything pnpm manages
+pnpm-lock.yaml
+
+# Build outputs
+dist/
+build/
+*.tsbuildinfo
+.vite/
+
+# Dependencies
+node_modules/
+
+# Env files
+.env
+.env.local
+.env.*.local

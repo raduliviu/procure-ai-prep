@@ -8,32 +8,32 @@ import { TanStackRouterDevtoolsPanel } from "@tanstack/react-router-devtools";
 import { router } from "./router";
 
 const queryClient = new QueryClient({
-  defaultOptions: {
-    queries: {
-      staleTime: 30_000,
-      refetchOnWindowFocus: false,
-    },
-  },
+	defaultOptions: {
+		queries: {
+			staleTime: 30_000,
+			refetchOnWindowFocus: false,
+		},
+	},
 });
 
 const rootElement = document.getElementById("root");
 if (!rootElement) throw new Error("Root element #root not found in index.html");
 
 createRoot(rootElement).render(
-  <StrictMode>
-    <QueryClientProvider client={queryClient}>
-      <RouterProvider router={router} />
-      {import.meta.env.DEV && (
-        <TanStackDevtools
-          plugins={[
-            { name: "TanStack Query", render: <ReactQueryDevtoolsPanel /> },
-            {
-              name: "TanStack Router",
-              render: <TanStackRouterDevtoolsPanel router={router} />,
-            },
-          ]}
-        />
-      )}
-    </QueryClientProvider>
-  </StrictMode>,
+	<StrictMode>
+		<QueryClientProvider client={queryClient}>
+			<RouterProvider router={router} />
+			{import.meta.env.DEV && (
+				<TanStackDevtools
+					plugins={[
+						{ name: "TanStack Query", render: <ReactQueryDevtoolsPanel /> },
+						{
+							name: "TanStack Router",
+							render: <TanStackRouterDevtoolsPanel router={router} />,
+						},
+					]}
+				/>
+			)}
+		</QueryClientProvider>
+	</StrictMode>,
 );
