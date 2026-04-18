@@ -41,6 +41,9 @@ export const PurchaseRequestSchema = z.object({
 });
 export type PurchaseRequest = z.infer<typeof PurchaseRequestSchema>;
 
+// GET /api/requests response
+export const PurchaseRequestListSchema = z.array(PurchaseRequestSchema);
+
 // POST /api/requests body
 export const CreateRequestBodySchema = z.object({
 	rawText: z.string().trim().min(1).max(5000),
