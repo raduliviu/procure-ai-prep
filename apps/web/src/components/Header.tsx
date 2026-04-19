@@ -11,11 +11,17 @@ export function Header() {
 	return (
 		<header>
 			<nav>
-				<Link to="/">
-					<strong>Procure AI Prep</strong>
+				<Link
+					to="/"
+					activeProps={{ className: "font-bold" }}
+					activeOptions={{ exact: true }}
+				>
+					Procure AI Prep
 				</Link>
 				{" | "}
-				<Link to="/requests/new">New request</Link>
+				<Link to="/requests/new" activeProps={{ className: "font-bold" }}>
+					New request
+				</Link>
 			</nav>
 			<div>
 				<span>Role:</span>{" "}
@@ -25,6 +31,7 @@ export function Header() {
 						setUserId(REQUESTER_ID);
 					}}
 					disabled={isRequester}
+					className={isRequester ? "font-bold" : undefined}
 				>
 					Requester
 				</button>{" "}
@@ -34,6 +41,7 @@ export function Header() {
 						setUserId(APPROVER_ID);
 					}}
 					disabled={isApprover}
+					className={isApprover ? "font-bold" : undefined}
 				>
 					Approver
 				</button>

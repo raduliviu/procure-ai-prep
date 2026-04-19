@@ -3,8 +3,10 @@ import { users } from "./schema.js";
 
 // These IDs MUST match apps/web/src/lib/users.ts so the Requester / Approver
 // buttons in the Header map to real rows via the `x-user-id` mock-auth header.
-const REQUESTER_ID = "00000000-0000-0000-0000-000000000001";
-const APPROVER_ID = "00000000-0000-0000-0000-000000000002";
+// They're syntactically valid v4 UUIDs (version=4, variant=8) so Zod's
+// strict z.uuid() accepts them.
+const REQUESTER_ID = "11111111-1111-4111-8111-111111111111";
+const APPROVER_ID = "22222222-2222-4222-8222-222222222222";
 
 async function seed() {
 	const inserted = await db
