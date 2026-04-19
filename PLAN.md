@@ -1,5 +1,7 @@
 # Procure AI Hackathon Prep — Intake Triage App
 
+> **Historical note.** This document was the build plan during development. The project has since shipped; for current setup, usage, and architecture see [`README.md`](README.md). This file is kept as a record of the design thinking, not as live documentation — some specifics (step ordering, small API details) diverged from this plan during execution.
+
 ## Why this app
 
 A one-page procurement intake tool: a requester types a purchase need in plain English, an LLM triages it into structured fields (category, amount, urgency, suggested vendors), and an approver reviews and decides. This deliberately mirrors Procure AI's _Generative Intake Management_ module so the practice reps transfer directly to the hackathon day.
@@ -37,12 +39,11 @@ purchase_requests
 POST   /api/requests              { rawText } → creates + triages
 GET    /api/requests?status=…     list
 GET    /api/requests/:id          detail
-PATCH  /api/requests/:id          edit triage fields (approver only)
 POST   /api/requests/:id/triage   re-run AI
 POST   /api/requests/:id/decision { decision, note }
 ```
 
-Mock auth: `x-user-id` header. Role enforcement lives in the decision + patch endpoints.
+Mock auth: `x-user-id` header. Role enforcement lives in the decision endpoint.
 
 ## AI triage contract
 
@@ -63,7 +64,7 @@ Seed a small fixed category list and ~20 vendors so the LLM has something to anc
 ## UI screens
 
 1. **New request** — textarea + submit, loading state, redirect to detail.
-2. **Request detail** — raw text, editable triage panel (save on blur), status chip, approve/reject bar for approvers.
+2. **Request detail** — raw text, read-only triage panel with a re-run button, status chip, approve/reject bar for approvers.
 3. **Queue** — role-aware list with status chips.
 
 Role toggle in the header (requester ↔ approver) rewrites `x-user-id` in localStorage.
@@ -142,7 +143,7 @@ Richer seed (5–10 requests across statuses so the UI isn't empty). README with
 
 ## Rough 1-day time budget
 
-- 30m — scaffold (Vite, Fastify, docker-compose Postgres, Drizzle migration)
+- 30m — scaffold (Vite, Hono, docker-compose Postgres, Drizzle migration)
 - 90m — backend: CRUD + triage endpoint + LLM call + Zod schemas
 - 90m — frontend: form + detail + queue
 - 60m — approval flow + polish

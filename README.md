@@ -48,7 +48,7 @@ pnpm dev                      # runs the api and the web in parallel
 1. Open http://localhost:5173 — pick a role in the header (**Requester** or **Approver**)
 2. **Requester** view: see your submitted requests, click **New request** to add one
 3. **Approver** view: see every request, open a triaged one and Approve/Reject with an optional note
-4. On any request still in `submitted` or `triaged` status, click **Re-run** in the AI triage card to invoke the LLM again
+4. On any request still in `submitted` or `triaged` status, click **Run triage** / **Re-run** in the AI triage card to invoke the LLM
 
 ## Useful commands
 
