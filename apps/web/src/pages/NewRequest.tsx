@@ -84,7 +84,9 @@ export function NewRequest() {
 					</CardContent>
 					<CardFooter>
 						<Button type="submit" disabled={!isValid || createRequest.isPending}>
-							{createRequest.isPending ? "Submitting…" : "Submit request"}
+							{createRequest.isPending
+								? "Submitting and triaging…"
+								: "Submit request"}
 						</Button>
 					</CardFooter>
 				</Card>

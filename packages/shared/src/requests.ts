@@ -62,3 +62,40 @@ export const DecisionBodySchema = z.object({
 	note: z.string().trim().max(2000).optional(),
 });
 export type DecisionBody = z.infer<typeof DecisionBodySchema>;
+
+// --- AI triage ---
+// Fixed enum values the LLM must choose from. Keeping these centralised
+// here means the API call, the DB shape, and the UI dropdowns stay
+// in sync.
+
+export const TriageCategorySchema = z.enum([
+	"IT",
+	"Office",
+	"Marketing",
+	"Travel",
+	"Services",
+	"Other",
+]);
+export type TriageCategory = z.infer<typeof TriageCategorySchema>;
+
+export const UrgencySchema = z.enum(["low", "medium", "high"]);
+export type Urgency = z.infer<typeof UrgencySchema>;
+
+export const CurrencySchema = z.enum(["EUR", "GBP", "USD"]);
+export type Currency = z.infer<typeof CurrencySchema>;
+
+/**
+ * The structured output the LLM produces for every triage call. The
+ * entire shape is enforced by OpenAI's strict JSON-schema mode, then
+ * re-validated server-side with Zod as a belt-and-suspenders check.
+ */
+export const TriageResultSchema = z.object({
+	category: TriageCategorySchema,
+	estimatedAmount: z.number().nonnegative(),
+	currency: CurrencySchema,
+	urgency: UrgencySchema,
+	suggestedVendors: z.array(SuggestedVendorSchema).max(5),
+	confidence: z.number().min(0).max(1),
+	reasoning: z.string().max(500),
+});
+export type TriageResult = z.infer<typeof TriageResultSchema>;

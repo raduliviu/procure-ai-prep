@@ -72,6 +72,21 @@ export function RequestDetail() {
 		},
 	});
 
+	const retriage = useMutation({
+		mutationFn: () =>
+			api.post<PurchaseRequest>(
+				`/api/requests/${id}/triage`,
+				{},
+				{
+					parse: (raw) => PurchaseRequestSchema.parse(raw),
+				},
+			),
+		onSuccess: async (updated) => {
+			queryClient.setQueryData(["requests", id], updated);
+			await queryClient.invalidateQueries({ queryKey: ["requests"], exact: false });
+		},
+	});
+
 	if (isLoading) {
 		return (
 			<div className="mx-auto max-w-3xl px-4 py-8">
@@ -105,6 +120,10 @@ export function RequestDetail() {
 	const showDecisionBar = role === "approver" && data.status === "triaged";
 	const alreadyDecided = data.status === "approved" || data.status === "rejected";
 	const triageRun = hasTriageData(data);
+	// The API blocks re-triage once a decision has been made. The UI
+	// hides the button in those cases so the affordance matches the
+	// backend rule.
+	const canRetriage = role !== null && (data.status === "submitted" || data.status === "triaged");
 
 	return (
 		<div className="mx-auto max-w-3xl space-y-6 px-4 py-8">
@@ -130,12 +149,43 @@ export function RequestDetail() {
 
 			<Card>
 				<CardHeader>
-					<CardTitle>AI triage</CardTitle>
-					<CardDescription>
-						{triageRun
-							? "Extracted fields from the latest triage run."
-							: "Triage has not run yet. It will populate these fields once the AI integration lands."}
-					</CardDescription>
+					<div className="flex items-start justify-between gap-4">
+						<div>
+							<CardTitle>AI triage</CardTitle>
+							<CardDescription>
+								{triageRun
+									? "Extracted fields from the latest triage run."
+									: "Triage has not run yet — either the initial attempt failed or the request was just created. Try re-running it."}
+							</CardDescription>
+						</div>
+						{canRetriage && (
+							<Button
+								type="button"
+								variant="outline"
+								size="sm"
+								onClick={() => {
+									retriage.mutate();
+								}}
+								disabled={retriage.isPending}
+							>
+								{retriage.isPending
+									? "Re-running…"
+									: triageRun
+										? "Re-run"
+										: "Run triage"}
+							</Button>
+						)}
+					</div>
+					{retriage.isError && (
+						<p className="text-destructive mt-2 text-sm">
+							{retriage.error instanceof ApiError
+								? ((retriage.error.body as { error?: string })?.error ??
+									`${retriage.error.status}: triage failed`)
+								: retriage.error instanceof Error
+									? retriage.error.message
+									: "Triage failed."}
+						</p>
+					)}
 				</CardHeader>
 				<CardContent>
 					{triageRun ? (
