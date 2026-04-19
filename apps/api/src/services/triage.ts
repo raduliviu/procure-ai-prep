@@ -19,18 +19,21 @@ const triageJsonSchema = z.toJSONSchema(TriageResultSchema, {
  * bad API keys, schema mismatches, etc.) — the POST handlers catch
  * them and leave the request in status=submitted so the user can
  * retry via the re-run endpoint.
+ *
+ * Uses OpenAI's Responses API (the recommended surface for new
+ * projects; Chat Completions is still supported but legacy-shaped).
  */
 export async function triageRequest(rawText: string): Promise<TriageResult> {
-	const completion = await openai.chat.completions.create(
+	const response = await openai.responses.create(
 		{
 			model: OPENAI_MODEL,
-			messages: [
+			input: [
 				{ role: "system", content: SYSTEM_PROMPT },
 				{ role: "user", content: rawText },
 			],
-			response_format: {
-				type: "json_schema",
-				json_schema: {
+			text: {
+				format: {
+					type: "json_schema",
 					name: "triage_result",
 					strict: true,
 					schema: triageJsonSchema,
@@ -44,14 +47,15 @@ export async function triageRequest(rawText: string): Promise<TriageResult> {
 		},
 	);
 
-	const content = completion.choices[0]?.message.content;
+	// output_text is the raw JSON string. strict mode guarantees it
+	// parses and conforms to the schema, but we re-validate with Zod
+	// so a runtime mismatch fails loudly instead of silently passing
+	// bad data to the DB.
+	const content = response.output_text;
 	if (!content) {
 		throw new Error("OpenAI returned an empty response");
 	}
 
-	// OpenAI strict mode guarantees the shape, but we re-parse with
-	// Zod so a runtime mismatch fails loudly instead of silently
-	// passing bad data to the DB.
 	const parsed: unknown = JSON.parse(content);
 	return TriageResultSchema.parse(parsed);
 }
