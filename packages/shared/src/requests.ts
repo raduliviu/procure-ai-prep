@@ -55,3 +55,10 @@ export const ListRequestsQuerySchema = z.object({
 	status: RequestStatusSchema.optional(),
 });
 export type ListRequestsQuery = z.infer<typeof ListRequestsQuerySchema>;
+
+// POST /api/requests/:id/decision body
+export const DecisionBodySchema = z.object({
+	decision: z.enum(["approved", "rejected"]),
+	note: z.string().trim().max(2000).optional(),
+});
+export type DecisionBody = z.infer<typeof DecisionBodySchema>;

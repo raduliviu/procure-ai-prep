@@ -1,11 +1,11 @@
-import { useCallback, useState } from 'react';
-import type { UserRole } from '@procure/shared';
-import { APPROVER_ID, REQUESTER_ID } from './users';
+import { useCallback, useState } from "react";
+import type { UserRole } from "@procure/shared";
+import { APPROVER_ID, REQUESTER_ID } from "./users";
 
-const STORAGE_KEY = 'x-user-id';
+const STORAGE_KEY = "x-user-id";
 
 function readUserId(): string | null {
-    return window.localStorage.getItem(STORAGE_KEY);
+	return window.localStorage.getItem(STORAGE_KEY);
 }
 
 /**
@@ -16,18 +16,18 @@ function readUserId(): string | null {
  * what the UI is showing.
  */
 export function useUserId() {
-    const [userId, setUserId] = useState<string | null>(readUserId);
+	const [userId, setUserId] = useState<string | null>(readUserId);
 
-    const setUserIdPersisted = useCallback((id: string | null) => {
-        if (id === null) {
-            window.localStorage.removeItem(STORAGE_KEY);
-        } else {
-            window.localStorage.setItem(STORAGE_KEY, id);
-        }
-        setUserId(id);
-    }, []);
+	const setUserIdPersisted = useCallback((id: string | null) => {
+		if (id === null) {
+			window.localStorage.removeItem(STORAGE_KEY);
+		} else {
+			window.localStorage.setItem(STORAGE_KEY, id);
+		}
+		setUserId(id);
+	}, []);
 
-    return [userId, setUserIdPersisted] as const;
+	return [userId, setUserIdPersisted] as const;
 }
 
 /**
@@ -36,8 +36,8 @@ export function useUserId() {
  * have not been clicked).
  */
 export function useRole(): UserRole | null {
-    const [userId] = useUserId();
-    if (userId === REQUESTER_ID) return 'requester';
-    if (userId === APPROVER_ID) return 'approver';
-    return null;
+	const [userId] = useUserId();
+	if (userId === REQUESTER_ID) return "requester";
+	if (userId === APPROVER_ID) return "approver";
+	return null;
 }

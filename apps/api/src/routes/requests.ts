@@ -2,7 +2,11 @@ import { Hono } from "hono";
 import { zValidator } from "@hono/zod-validator";
 import { and, desc, eq, type SQL } from "drizzle-orm";
 import { z } from "zod";
-import { CreateRequestBodySchema, ListRequestsQuerySchema } from "@procure/shared";
+import {
+	CreateRequestBodySchema,
+	DecisionBodySchema,
+	ListRequestsQuerySchema,
+} from "@procure/shared";
 import { db } from "../db/client.js";
 import { purchaseRequests } from "../db/schema.js";
 
@@ -79,3 +83,55 @@ requestsRouter.get("/:id", zValidator("param", IdParamSchema), async (c) => {
 
 	return c.json(row);
 });
+
+/**
+ * POST /api/requests/:id/decision
+ * Approve or reject a triaged request. Only approvers can call this;
+ * only requests currently in `triaged` status can transition.
+ */
+requestsRouter.post(
+	"/:id/decision",
+	zValidator("param", IdParamSchema),
+	zValidator("json", DecisionBodySchema),
+	async (c) => {
+		const { id } = c.req.valid("param");
+		const { decision, note } = c.req.valid("json");
+		const user = c.get("user");
+
+		if (user.role !== "approver") {
+			return c.json({ error: "Only approvers can decide" }, 403);
+		}
+
+		const existing = await db
+			.select()
+			.from(purchaseRequests)
+			.where(eq(purchaseRequests.id, id))
+			.limit(1);
+		const row = existing[0];
+		if (!row) {
+			return c.json({ error: "Not found" }, 404);
+		}
+
+		if (row.status !== "triaged") {
+			return c.json(
+				{
+					error: `Cannot decide a ${row.status} request; only triaged requests can be approved or rejected.`,
+				},
+				409,
+			);
+		}
+
+		const updated = await db
+			.update(purchaseRequests)
+			.set({
+				status: decision,
+				decisionBy: user.id,
+				decisionNote: note ?? null,
+				decidedAt: new Date(),
+			})
+			.where(eq(purchaseRequests.id, id))
+			.returning();
+
+		return c.json(updated[0]);
+	},
+);
