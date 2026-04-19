@@ -106,11 +106,9 @@ export function Queue() {
 							</SelectContent>
 						</Select>
 					</div>
-					{role !== "approver" && (
-						<Link to="/requests/new" className={buttonVariants()}>
-							New request
-						</Link>
-					)}
+					<Link to="/requests/new" className={buttonVariants()}>
+						New request
+					</Link>
 				</div>
 			</div>
 
@@ -134,14 +132,12 @@ export function Queue() {
 								? "No requests yet."
 								: `No ${STATUS_LABEL[statusFilter].toLowerCase()} requests.`}
 						</p>
-						{role === "requester" && (
-							<Link
-								to="/requests/new"
-								className={buttonVariants({ variant: "outline" }) + " mt-4"}
-							>
-								Submit your first request
-							</Link>
-						)}
+						<Link
+							to="/requests/new"
+							className={buttonVariants({ variant: "outline" }) + " mt-4"}
+						>
+							Submit your first request
+						</Link>
 					</CardContent>
 				</Card>
 			)}
